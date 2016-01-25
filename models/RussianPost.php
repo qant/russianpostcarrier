@@ -7,7 +7,6 @@ class RussianPost extends ObjectModel {
     public $id_post_zone;
     public $active;
     public $tableWithPrefix;
-    protected $dbconn;
     public static $definition = array(
         'table' => 'russian_post',
         'primary' => 'id',
@@ -78,7 +77,6 @@ class RussianPost extends ObjectModel {
 
         return $row['id_post_zone'];
 
-        //$row = $this->dbconn->getRow("SELECT ");
     }
 
     // Пришлось перегрузить этот метод. Колонка в таблице
