@@ -44,8 +44,8 @@ class RussianPost extends ObjectModel {
                 '`active` INT(11) NOT NULL,' .
                 'PRIMARY KEY (`id`)' .
                 ') DEFAULT CHARSET=utf8;';
-
-        if (!RussianPost::$db->execute($sql, false)) {
+        
+        if (!Db::getInstance()->execute($sql, false)) {
             return false;
         }
 
@@ -56,7 +56,7 @@ class RussianPost extends ObjectModel {
 
         $sql = "DROP TABLE IF EXISTS `{$this->tableWithPrefix}`;";
 
-        if (!RussianPost::$db->execute($sql, false)) {
+        if (!Db::getInstance()->execute($sql, false)) {
             return false;
         }
 
@@ -71,7 +71,7 @@ class RussianPost extends ObjectModel {
         if (!$addr->id_state)
             return 0;
 
-        $row = RussianPost::$db->getRow("SELECT * FROM `{$this->tableWithPrefix}` WHERE `id_state` = {$addr->id_state} AND `active` = 1");
+        $row = Db::getInstance()->getRow("SELECT * FROM `{$this->tableWithPrefix}` WHERE `id_state` = {$addr->id_state} AND `active` = 1");
 
         if (!isset($row['id_post_zone']))
             return 0;
