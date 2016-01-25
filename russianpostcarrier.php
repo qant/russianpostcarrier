@@ -1,10 +1,5 @@
 <?php
 
-/**
- *
- * TODO: Разобраться с исключениями, они здесь просто напрашиваются
- *
- * */
 if (!defined('_PS_VERSION_'))
     exit;
 
@@ -12,15 +7,13 @@ require_once(_PS_MODULE_DIR_ . 'russianpostcarrier/models/RussianPost.php');
 
 class russianpostcarrier extends CarrierModule {
 
-    private $model;
-    // Хоть и неочевидно, но здесь это должно быть. Кем-то присваивается.
     public $id_carrier;
 
     public function __construct() {
 
         $this->name = 'russianpostcarrier';
         $this->tab = 'shipping_logistics';
-        $this->version = '1.0.6';
+        $this->version = '1.0.7';
         $this->author = 'Serge Rodovnichenko';
 
         parent::__construct();
@@ -36,10 +29,10 @@ class russianpostcarrier extends CarrierModule {
 
     public function getOrderShippingCost($params, $shipping_cost) {
 
-        //В $params лежит тупо объект типа Cart. ВРОДЕ БЫ. Может, не всегда?
-        //Параметр $params содержит в виде массива cart, customer и address. 
-        //$shipping_cost - стоимость доставки расчитанная стандартным методом 
-        //(через таблицы зависимости от региона и диапазонов)
+        // $params is Cart object. Probs. Maybe not all the time?
+        //$params contain cart array, customer и address. 
+        //$shipping_cost - price of delivery calculate of standart method
+        //(thru the rables depends of regions and ranges)
         $is_COD = false;
         if ($this->id_carrier != (int) Configuration::get('SR_RUSSIAN_POST_CARRIER_ID'))
             {
@@ -62,16 +55,16 @@ class russianpostcarrier extends CarrierModule {
 
         $weight = $params->getTotalWeight();
 
-        // Цена за первые полкило
+        // Price of firs kg
         $base_price = Configuration::get("RUSSIANPOST_ZONE{$rp_zone}_BASE_PRICE");
         $additional_half_kg_price = Configuration::get("RUSSIANPOST_ZONE{$rp_zone}_ADD_PRICE");
 
-        //Сколько дополнительных "полкило" в товаре
+        //How much "half kg" in product
         $add_parts = ceil((($weight < 0.5 ? 0.5 : $weight) - 0.5) / 0.5);
 
         $price = $base_price + $add_parts * $additional_half_kg_price;
 
-        // Тяжеловесная посылка, +30%
+        // If to havy +30%
         if ($weight >= Configuration::get("RUSSIANPOST_PONDROUS_WEIGHT"))
             $price = $price * 1.3;
 
